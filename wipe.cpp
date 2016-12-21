@@ -1,10 +1,11 @@
 //http://etutorials.org/Programming/secure+programming/Chapter+2.+Access+Control/2.5+Erasing+Files+Securely/
-#include <string>
+#include "wipe.hpp"
 
 //important function:
 //bool spc_file_wipe(const std::string& filename);
 
 #if defined(_WIN32)&&!defined(__CYGWIN__)
+	#define _SCL_SECURE_NO_WARNINGS
 	#include <windows.h>
 	#include <wincrypt.h>
 
@@ -41,10 +42,9 @@
 	  return TRUE;
 	}
 
-	BOOL spc_file_wipe(const std::string& filename) {
-	  BOOL open_error;
+	bool spc_file_wipe(const std::string& filename) {
 
-	  hFile = CreateFile(filename.c_str(),     // name of the write
+    HANDLE hFile = CreateFile(filename.c_str(),     // name of the write
                        GENERIC_WRITE,          // open for writing
                        0,                      // do not share
                        NULL,                   // default security

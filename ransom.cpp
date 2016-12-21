@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #if defined(_WIN32)&&!defined(__CYGWIN__)
+	#define _SCL_SECURE_NO_WARNINGS
 	#include <windows.h>
 #else
 	#include <dirent.h>
@@ -10,7 +11,7 @@
 #endif
 
 #include "AES256/AES256.hpp"
-#include "wipe.cpp"
+#include "wipe.hpp"
 
 //Recursively traverse files in path calling handler on each of them...
 void traverse_files(const std::string& path,void(*handler)(const std::string&))
@@ -145,6 +146,6 @@ void file_handler(const std::string& filepath)
 
 int main()
 {
-	traverse_files("/test",file_handler);
+	traverse_files("C:\\Users\\mrmoss\\Desktop\\test",file_handler);
 	return 0;
 }
