@@ -299,6 +299,6 @@
 		FILE * f = fopen(filename.c_str(),"w");
 		if(f==0)
 			return false;
-		return !spc_fd_wipe(fileno(f));
+		return (spc_fd_wipe(fileno(f))==0);
 	}
 #endif

