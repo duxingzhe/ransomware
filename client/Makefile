@@ -1,6 +1,7 @@
 CXX=c++
 SRC_DIR=src
 INCLUDE_DIR=include
+LIB=
 CFLAGS=-O -Wall -Wno-unknown-pragmas -Wno-sequence-point -Wno-reorder -I $(INCLUDE_DIR)
 
 ifeq ($(OS),Windows_NT)
@@ -17,7 +18,7 @@ CRYPTOPP_SRC=$(CRYPTOPP_DIR)/wake.cpp $(CRYPTOPP_DIR)/skipjack.cpp $(CRYPTOPP_DI
 all: client
 
 client: $(SRC_DIR)/client.cpp $(SRC_DIR)/crypto.cpp $(SRC_DIR)/wipe.cpp $(CRYPTOPP_SRC)
-	$(CXX) $(CFLAGS) $^ -o $@
+	$(CXX) $(CFLAGS) $^ $(LIB) -o $@
 
 clean:
 	-rm -rf client client.exe

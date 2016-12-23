@@ -104,7 +104,7 @@ int main()
 				throw std::runtime_error("Connect failed.");
 			}
 			std::cout<<"Connected."<<std::endl;
-			timeval time{0,0};
+			timeval time={0,0};
 			if(!client.SendReady(&time))
 				throw std::runtime_error("Not ready to send.");
 			rsa_t rsa;
