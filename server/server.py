@@ -2,6 +2,7 @@
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
+import json
 import os
 import select
 import socket
@@ -21,12 +22,18 @@ def available(conn):
 	return False
 
 class client_t:
-	def __init__(self,uid,sock):
+	def __init__(self,uid,sock,key='',iv=''):
 		self.uid=uid
 		self.sock=sock
-		self.secret=''
+		self.key=key
+		self.iv=iv
 		print(self.uid+': New client.')
-		self.sock.settimeout(5)
+		if self.key:
+			print(self.uid+': key is '+self.key.encode('hex'))
+		if self.iv:
+			print(self.uid+': iv  is '+self.iv.encode('hex'))
+		if sock:
+			self.sock.settimeout(5)
 
 	def update(self):
 		if not self.sock:
@@ -57,26 +64,74 @@ class client_t:
 			self.sock.close()
 			return False
 
+	def to_dict(self):
+		if len(self.uid)>0 and len(self.key)>0 and len(self.iv)>0:
+			obj={}
+			obj['uid']=self.uid
+			obj['key']=self.key.encode('hex')
+			obj['iv']=self.iv.encode('hex')
+			return obj
+		return None
+
+def clients_to_dict(clients):
+	clients_dict={}
+	for key in clients:
+		client_dict=clients[key].to_dict()
+		if client_dict:
+			clients_dict[key]=clients[key].to_dict()
+	return clients_dict
+
+def load_json():
+	try:
+		return_clients={}
+		with open('clients.json','r') as f:
+			clients=f.read()
+			f.close()
+			clients=json.loads(clients)
+			for key in clients:
+				client=clients[key]
+				return_clients[client['uid']]=client_t(client['uid'],None,
+					client['key'].decode('hex'),client['iv'].decode('hex'))
+		return return_clients
+	except Exception as error:
+		print('Error reading load file - '+str(error))
+		return {}
+
+def save_json(clients):
+	try:
+		with open('clients.json','w') as f:
+			f.write(json.dumps(clients_to_dict(clients)))
+			f.close()
+	except Exception as error:
+		print('Error writing save file - '+str(error))
+
 if __name__=='__main__':
-	addr="127.0.0.1"
-	port=4444
-	sock=socket.socket()
-	sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-	sock.setsockopt(socket.SOL_SOCKET,socket.SO_KEEPALIVE,1)
-	sock.bind((addr,port))
-	sock.listen(1)
-	print('Listening on '+addr+':'+str(port)+'.')
-	clients={}
-	while True:
-		if available(sock):
-			client,addr=sock.accept()
-			uid=str(SHA.new(str(uuid.uuid1())).hexdigest())
-			clients[uid]=client_t(uid,client)
-		keep_clients={}
-		for key in clients:
-			if clients[key].update():
-				keep_clients[key]=clients[key]
-			else:
-				print(key+': Removed.')
-		clients=keep_clients
-		time.sleep(0.1)
+	try:
+		addr='127.0.0.1'
+		port=4444
+		sock=socket.socket()
+		sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+		sock.setsockopt(socket.SOL_SOCKET,socket.SO_KEEPALIVE,1)
+		sock.bind((addr,port))
+		sock.listen(1)
+		print('Listening on '+addr+':'+str(port)+'.')
+		clients=load_json()
+		while True:
+			if available(sock):
+				client,addr=sock.accept()
+				uid=str(SHA.new(str(uuid.uuid1())).hexdigest())
+				clients[uid]=client_t(uid,client)
+			keep_clients={}
+			for key in clients:
+				if clients[key].update():
+					keep_clients[key]=clients[key]
+					save_json(keep_clients)
+				else:
+					print(key+': Removed.')
+			clients=keep_clients
+			time.sleep(0.1)
+	except KeyboardInterrupt:
+		exit(1)
+	except Exception as error:
+		print('Error - '+str(error))
+		exit(1)

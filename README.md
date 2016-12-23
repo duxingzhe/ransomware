@@ -19,4 +19,3 @@ Note: These take a LONG time to compile! This is because of CryptoPP. If you wan
 To do:
 
 - Check on licenses...
-- Store information on the server in a database file (well...probably just a flat-file...).

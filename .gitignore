@@ -4,3 +4,4 @@ client/ransom
 client/ransom.exe
 client/unransom
 client/unransom.exe
+server/clients.json
