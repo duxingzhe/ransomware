@@ -5,6 +5,13 @@
 #include <cryptopp/modes.h>
 #include <stdexcept>
 
+std::string hex_decode(const std::string& hex)
+{
+	std::string ascii;
+	CryptoPP::StringSource ss(hex,true,new CryptoPP::HexDecoder(new CryptoPP::StringSink(ascii)));
+	return ascii;
+}
+
 aes_t::aes_t(const std::string& key,const std::string& iv):key_m(key),iv_m(iv)
 {
 	if(key_m.size()!=16&&key_m.size()!=24&&key_m.size()!=32)

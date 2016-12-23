@@ -8,6 +8,8 @@ If it is not obvious:
 
 Server is a basic python tcp server that accepts connections that send a RSA public key. Server generates a uid and AES256 key/iv and sends them to the client.
 
+Server requires pycrypto (pip install pycrypto).
+
 Client is a no-dependency (other than ws2_32 on windows...) c++ program that opens a socket connection, generates a RSA 4096 public and private key pair. The client sends the public key through the socket and receives a UID and an AES256 key/iv. It uses the key and iv to encrypt all files in a given directory.
 
 To do:

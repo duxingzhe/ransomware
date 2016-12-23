@@ -1,8 +1,30 @@
 //http://etutorials.org/Programming/secure+programming/Chapter+2.+Access+Control/2.5+Erasing+Files+Securely/
-#include "wipe.hpp"
+#include "file.hpp"
+#include <fstream>
 
-//important function:
-//bool spc_file_wipe(const std::string& filename);
+
+bool file_to_string(const std::string& filename,std::string& data)
+{
+	char buffer;
+	std::ifstream istr(filename.c_str(),std::ios_base::in|std::ios_base::binary);
+	istr.unsetf(std::ios_base::skipws);
+	if(!istr)
+		return false;
+	data="";
+	while(istr>>buffer)
+		data+=buffer;
+	istr.close();
+	return true;
+}
+
+bool string_to_file(const std::string& data,const std::string& filename)
+{
+	bool saved=false;
+	std::ofstream ostr(filename.c_str(),std::ios_base::out|std::ios_base::binary);
+	saved=(bool)(ostr<<data);
+	ostr.close();
+	return saved;
+}
 
 #if defined(_WIN32)&&!defined(__CYGWIN__)
 	#define _SCL_SECURE_NO_WARNINGS
@@ -301,4 +323,5 @@
 			return false;
 		return (spc_fd_wipe(fileno(f))==0);
 	}
+
 #endif
