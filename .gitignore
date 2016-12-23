@@ -1,3 +1,5 @@
+*.o
+test
 client/ransom
 client/ransom.exe
 client/unransom

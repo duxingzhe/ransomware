@@ -1,25 +1,35 @@
 #include "crypto.hpp"
+#include "file.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include "traverse.hpp"
-#include "file.hpp"
 
-//Custom file handler...
 void file_handler(const std::string& filepath,const std::string& key,const std::string& iv)
 {
 	try
 	{
 		aes_t aes(key,iv);
 		std::string cipher;
-		if(file_to_string(filepath,cipher)&&string_to_file(aes.decrypt(key),filepath))
-			std::cout<<"Unransomed "<<filepath<<std::endl;
-		else
-			std::cout<<"Error "<<filepath<<std::endl;
+		if(!file_to_string(filepath,cipher))
+		{
+			std::cout<<"Skipping "<<filepath<<" - Could not read file."<<std::endl;
+			return;
+		}
+		if(!string_to_file(aes.decrypt(cipher),filepath))
+		{
+			std::cout<<"Skipping "<<filepath<<" - Could not write file."<<std::endl;
+			return;
+		}
+		std::cout<<"Unransomed "<<filepath<<std::endl;
+	}
+	catch(std::exception& error)
+	{
+		std::cout<<"Skipping "<<filepath<<" - "<<error.what()<<std::endl;
 	}
 	catch(...)
 	{
-		std::cout<<"Skipping "<<filepath<<std::endl;
+		std::cout<<"Skipping "<<filepath<<" - Unknown error."<<std::endl;
 	}
 }
 

@@ -36,7 +36,7 @@ std::string aes_t::decrypt(const std::string& cipher)
 	std::string plain;
 	CryptoPP::AES::Decryption decryptor((unsigned char*)key_m.c_str(),key_m.size());
 	CryptoPP::CBC_Mode_ExternalCipher::Decryption cbc(decryptor,(unsigned char*)iv_m.c_str());
-	CryptoPP::StreamTransformationFilter filter(cbc,new CryptoPP::StringSink( plain ) );
+	CryptoPP::StreamTransformationFilter filter(cbc,new CryptoPP::StringSink(plain));
 	filter.Put((unsigned char*)cipher.c_str(),cipher.size());
 	filter.MessageEnd();
 	return plain;

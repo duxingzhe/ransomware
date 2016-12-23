@@ -10,12 +10,13 @@ Server is a basic python tcp server that accepts connections that send a RSA pub
 
 Server requires pycrypto (pip install pycrypto).
 
-Client is a no-dependency (other than ws2_32 on windows...) c++ program that opens a socket connection, generates a RSA 4096 public and private key pair. The client sends the public key through the socket and receives a UID and an AES256 key/iv. It uses the key and iv to encrypt all files in a given directory.
+Ransom is a no-dependency (other than ws2_32 on windows...) c++ program that opens a socket connection, generates a RSA 4096 public and private key pair. Ransom sends the public key through the socket and receives a UID and an AES256 key/iv. It uses the key and iv to encrypt all files in a given directory.
+
+Unransom is also a no-dependency c++ program that asks for a directory, key, and iv and then decrypts any ransomed files.
+
+Note: These take a LONG time to compile! This is because of CryptoPP. If you want to experiment with this, I'd recommend compiling everything in client/include/cryptopp as .o files and linking with those instead of recompiling every time...
 
 To do:
 
-- Test on windows (definitely doesn't compile since I'm missing -lws2_32 on the flags...but I'll get to that when I test this on windows)...
 - Check on licenses...
 - Store information on the server in a database file (well...probably just a flat-file...).
-- Add sleep to client loop.
-- Double check all error conditions and failure points.

