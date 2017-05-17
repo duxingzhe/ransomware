@@ -1,8 +1,8 @@
 #ifndef CRYPTO_WRAPPER_HPP
 #define CRYPTO_WRAPPER_HPP
 
-#include <cryptopp/osrng.h>
-#include <cryptopp/rsa.h>
+#include "../include/cryptopp/osrng.h"
+#include "../include/cryptopp/rsa.h"
 #include <string>
 
 std::string hex_decode(const std::string& hex);

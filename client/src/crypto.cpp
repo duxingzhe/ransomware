@@ -1,8 +1,8 @@
 #include "crypto.hpp"
 
-#include <cryptopp/aes.h>
-#include <cryptopp/hex.h>
-#include <cryptopp/modes.h>
+#include "../include/cryptopp/aes.h"
+#include "../include/cryptopp/hex.h"
+#include "../include/cryptopp/modes.h"
 #include <stdexcept>
 
 std::string hex_decode(const std::string& hex)
