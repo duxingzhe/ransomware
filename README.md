@@ -18,4 +18,4 @@ Note: These take a LONG time to compile! This is because of CryptoPP. If you wan
 
 <h1>Disclaimer</h1>
 
-Do not use this software in malicious purpose. You will put into jail or other severe punishment in your country or region.
+Do not use this software in malicious purpose. You will be sentensed or other severe legislative punishment in your country or region.
