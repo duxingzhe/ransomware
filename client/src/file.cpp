@@ -51,13 +51,13 @@ bool string_to_file(const std::string& data,const std::string& filename)
 	}
 
 	static BOOL PatternPass(HANDLE hFile, BYTE *pbBuffer, DWORD cbBuffer, DWORD dwFileSize) {
-	  DWORD cbTotalWritten, cbWrite, cbWritten;
+        DWORD cbTotalWritten, cbWrite, cbWritten;
 
-	  if (!cbBuffer || SetFilePointer(hFile, 0, 0, FILE_BEGIN) == 0xFFFFFFFF) return FALSE;
-	  while (dwFileSize > 0) {
+        if (!cbBuffer || SetFilePointer(hFile, 0, 0, FILE_BEGIN) == 0xFFFFFFFF) return FALSE;
+        while (dwFileSize > 0) {
 		cbWrite = (dwFileSize > cbBuffer ? cbBuffer : dwFileSize);
 		for (cbTotalWritten = 0;  cbWrite > 0;  cbTotalWritten += cbWritten)
-		  if (!WriteFile(hFile, pbBuffer + cbTotalWritten, cbWrite - cbTotalWritten,
+            if (!WriteFile(hFile, pbBuffer + cbTotalWritten, cbWrite - cbTotalWritten,
 						 &cbWritten, 0)) return FALSE;
 		dwFileSize -= cbTotalWritten;
 	  }
@@ -117,7 +117,7 @@ bool string_to_file(const std::string& data,const std::string& filename)
         for (dwPass = 0;  dwPass < 3;  dwPass++) {
         dwCount   = sizeof(pbBuffer) / cbPattern;
         for (dwIndex = 0;  dwIndex < dwCount;  dwIndex++)
-          CopyMemory(pbBuffer + (dwIndex * cbPattern), pbTriplePats[dwPass],
+            CopyMemory(pbBuffer + (dwIndex * cbPattern), pbTriplePats[dwPass],
                       cbPattern);
             if (!PatternPass(hFile, pbBuffer, cbPattern * dwCount, dwFileSize)) {
                 CryptReleaseContext(hProvider, 0);
