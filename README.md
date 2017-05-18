@@ -16,6 +16,6 @@ Unransom is also a no-dependency c++ program that asks for a directory, key, and
 
 Note: These take a LONG time to compile! This is because of CryptoPP. If you want to experiment with this, I'd recommend compiling everything in client/include/cryptopp as .o files and linking with those instead of recompiling every time...
 
-To do:
+<h1>Disclaimer</h1>
 
-- Check on licenses...
+Do not use this software in malicious purpose. You will be sentensed or other severe legislative punishment in your country or region.
