@@ -10,7 +10,7 @@ import sys
 import time
 import uuid
 
-def available(conn):
+def available(conn) :
 
     try:
         readable,writeable,errored=select.select([conn],[],[],0)

